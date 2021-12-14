@@ -1,0 +1,38 @@
+{%extends "registration/base.html"%}
+{% load bootstrap5 %}
+{% load static %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-3 home">
+      <div class="mobile"></div>
+    </div>
+    <div class="col-md-6 top-margin">
+        {% if form.errors %}
+        <p>Some information may be incorrect</p>
+    {% endif %}
+    <div class="signup-fields">
+        <div class="section">
+                <div class="mylogo">
+                
+                </div>
+                <span class="text-center">Sign up to see projects from your friends.</span>
+            <div class="form-section" id="register">
+                <form method="post" action="/accounts/register/">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary btn-sm" value="Sign up">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="section">
+            <p class="log forgot">Have an account? <a href="/accounts/login/?next=/">Log in</a></p>
+        </div>
+    </div>
+    </div>
+  </div>
+</div>
+​
+{% endblock %}
