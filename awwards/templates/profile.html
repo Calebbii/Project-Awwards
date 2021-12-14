@@ -50,7 +50,7 @@
               <div class="col-md-4">
                 {% if project.user.profile.profile_image%}
                 <p><a href="{% url 'users_profile' project.user.id %}"><img class="profile_image"
-                  src="{{ project.user.profile.profile_image.url }}" alt=""></a></p>
+                  src="{{ project.user.profile.profile_image.url }}" alt="" height="30px" width="30px" style="border-radius:50%"></a></p>
                 {% else %}
                   <i style="font-size:30px;color:#4888BE" class="fa fa-user" aria-hidden="true"></i>
                 {% endif %}
