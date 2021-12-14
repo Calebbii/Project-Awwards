@@ -2,15 +2,24 @@ from django.contrib.auth.models import User
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 import datetime
-from .forms import ProjectPostForm, RatingsForm, UpdateProfile, UpdateUser
+from .forms import ProjectPostForm, RatingsForm, Registration, UpdateProfile, UpdateUser
 from awwards.models import Project
 from .models import Project,Rating,Profile
 import random
 from django.contrib import messages
+from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializer import ProfileSerializer,ProjectSerializer
+from rest_framework import status
+from rest_framework import viewsets
+from .permissions import IsAdminOrReadOnly
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 # def home(request):
 #     return render(request, 'home.html')
+@login_required(login_url='/accounts/login/')
 def home(request):
     post_form = ProjectPostForm()
     all_users = User.objects.all()
@@ -18,6 +27,7 @@ def home(request):
 
     return render (request,'home.html',{"projects":projects,"post_project":post_form,"all_users":all_users})
 
+@login_required(login_url='/accounts/login/')
 def profile(request):
     current_user = request.user
     all_users = User.objects.all()
@@ -67,6 +77,21 @@ def detail(request,project_id):
         form = RatingsForm()
     return render(request, 'details.html', {'current_user':current_user,'all_ratings':all_ratings,'project':project,'rating_form': form,'rating_status': rating_status})
 
+def register(request):
+    if request.method == 'POST':
+        form = Registration(request.POST)
+        if form.is_valid():
+            form.save()
+            email = form.cleaned_data['email']
+            username = form.cleaned_data.get('username')
+
+            messages.success(request,f'Account for {username} created,you can now login')
+        return redirect('login')
+    else:
+        form = Registration()
+    return render(request,'registration/registration_form.html',{"form":form})
+
+@login_required(login_url='/accounts/login/')
 def update_profile(request):
     if request.method == 'POST':
         user_form = UpdateUser(request.POST,instance=request.user)
@@ -84,7 +109,8 @@ def update_profile(request):
         'profile_form':profile_form
     }
     return render(request,'update.html',params)
-  
+
+@login_required(login_url='/accounts/login/')
 def search(request):
     if 'project' in request.GET and request.GET["project"]:
         search_term = request.GET.get("project")
@@ -96,7 +122,7 @@ def search(request):
         message = "You haven't searched for any term"
         return render(request,'search.html',{"message":message})
 
-
+@login_required(login_url='/accounts/login/')
 def users_profile(request,pk):
     user = User.objects.get(pk = pk)
     projects = Project.objects.filter(user = user)
@@ -104,6 +130,7 @@ def users_profile(request,pk):
     
     return render(request,'users_profile.html',{"user":user,"projects":projects,"current_user":current_user})
 
+@login_required(login_url='/accounts/login/')
 def post_project(request):
     if request.method == 'POST':
         post_form = ProjectPostForm(request.POST,request.FILES) 
@@ -117,10 +144,24 @@ def post_project(request):
         post_form = ProjectPostForm()
     return render(request,'post_project.html',{"post_form":post_form})
 
-
+@login_required(login_url='/accounts/login/')
 def delete(request,project_id):
     current_user = request.user
     project = Project.objects.get(pk=project_id)
     if project:
         project.delete_project()
     return redirect('home')
+
+class ProjectList(APIView):
+    def get(self,request,format=None):
+        permission_classes = (IsAdminOrReadOnly,)
+        projects=Project.objects.all()
+        serializers=ProjectSerializer(projects,many=True)
+        return Response(serializers.data)
+
+class ProfileList(APIView):
+    def get(self,request,format=None):
+        permission_classes = (IsAdminOrReadOnly,)
+        profiles=Profile.objects.all()
+        serializers=ProfileSerializer(profiles,many=True)
+        return Response(serializers.data)

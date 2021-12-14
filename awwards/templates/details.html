@@ -10,7 +10,7 @@
     <div class="col-md-2"></div>
     <!-- displaying projects projects -->
     <div class="col-md-8">
-      <h2>Ratings</h2>
+      <h2 style="color: blue;">Ratings</h2>
       <table class="table" border="1">
         <th>Username</th>
         <th>Design Rating</th>
@@ -30,21 +30,20 @@
    
       {% endfor %}
     </table>
-      <h2 class="text-success">{{ project.title }}</h2>
+      <h2 class="text-success" style="color: blue;">{{ project.title }}</h2>
       <P>{{ project.description}}</P>
-      <h2>Technologies used</h2>
+      <h2 style="color: blue;">Technologies used</h2>
       <p>{{project.technologies_used}}</p>
-      <!--Display projects project images  -->
       <img src="{{project.project_image.url}}" class="img-thumbnail" alt="Image" onclick="window.open(this.src)">
       <div class="row">
         <div class="col-md-3">
-          <a href="{{project.repo_link}}"><button class="btn link live-link">View on Github</button></a>
+          <a href="{{project.repo_link}}">View on Github</a>
         </div>
         <div class="col-md-3">
-          <a href="{{project.live_link}}"><button class="btn link live-link">View Live Site</button></a>
+          <a href="{{project.live_link}}">Live Site</a>
         </div>
         <div class="col-md-6">
-          <P>Posted on: <strong>{{project.post_date|date}}</strong> by <span class="text-success">{{project.user.username}}</span>
+          <p>Posted on: {{project.post_date|date}}</p>
         </div>
       </div>
       {% if rating_status %}
