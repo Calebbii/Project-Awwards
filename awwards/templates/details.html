@@ -1,0 +1,68 @@
+{%extends 'base.html'%}
+{% load bootstrap5 %}
+{% block content %}
+{{ block.super}}
+
+<div class="container-fluid">
+
+  <!-- Looping through projects   -->
+  <div class="row project">
+    <div class="col-md-2"></div>
+    <!-- displaying projects projects -->
+    <div class="col-md-8">
+      <h2>Ratings</h2>
+      <table class="table" border="1">
+        <th>Username</th>
+        <th>Design Rating</th>
+        <th>Usability Rating</th>
+        <th>Content Rating</th>
+        <th>Overal Score</th>
+      {% for rating in all_ratings %}
+      <tr>
+        <td class="user">{{ rating.user.username }}</td>
+        <td class="design">{{ rating.design_wise}}</td>
+        <td class="usability">{{ rating.usability_wise}}</td>
+        <td class="content">{{ rating.content_wise }}</td>
+        <td class="average">{{ rating.aggregate_average_rate }}</td>
+
+      </tr>
+
+   
+      {% endfor %}
+    </table>
+      <h2 class="text-success">{{ project.title }}</h2>
+      <P>{{ project.description}}</P>
+      <h2>Technologies used</h2>
+      <p>{{project.technologies_used}}</p>
+      <!--Display projects project images  -->
+      <img src="{{project.project_image.url}}" class="img-thumbnail" alt="Image" onclick="window.open(this.src)">
+      <div class="row">
+        <div class="col-md-3">
+          <a href="{{project.repo_link}}"><button class="btn link live-link">View on Github</button></a>
+        </div>
+        <div class="col-md-3">
+          <a href="{{project.live_link}}"><button class="btn link live-link">View Live Site</button></a>
+        </div>
+        <div class="col-md-6">
+          <P>Posted on: <strong>{{project.post_date|date}}</strong> by <span class="text-success">{{project.user.username}}</span>
+        </div>
+      </div>
+      {% if rating_status %}
+      {% else %}
+      {% if user.is_authenticated %}
+      <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form rating_form %}
+        <button class="btn btn-success link">Rate</button>
+      </form>
+      {% endif %}
+      {% endif %}
+      {% if project.user.username == current_user.username %}
+      <a href="{% url 'delete' project.id %}" class="btn btn-danger">Delete</a>
+      {% endif %}
+
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+</div>
+{% endblock %}
