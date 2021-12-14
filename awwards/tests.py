@@ -3,35 +3,6 @@ from .models import Profile,Project, Rating
 from django.contrib.auth.models import User
 
 # Create your tests here.
-class RatingTestClass(TestCase):
-    def setUp(self):
-        self.user = User.objects.create(id=1, username='Calebbii')
-        self.project = Project.objects.create(id=1, title='Nifty Design', description='This website showcases designers work and what their brands have produced.',technologies_used='HTML',post_date='2021,6,19',project_image='https://cloudinary url', repo_link='http://github.com',live_link='http://heroku.com',user=self.user)
-        self.rating = Rating.objects.create(id=1, design_wise=8, usability_wise=8, content_wise=7, user=self.user, project=self.project)
-
-    def test_instance(self):
-        self.assertTrue(isinstance(self.rating, Rating))
-
-    def test_save_rating(self):
-        self.rating.save_rating()
-        rating = Rating.objects.all()
-        self.assertTrue(len(rating) > 0)
-
-
-class ProfileTestClass(TestCase):
-    def setUp(self):
-        self.user = User(id=1, username='Calebbii', password='1234')
-        self.user.save()
-
-    def test_instance(self):
-        self.assertTrue(isinstance(self.user, User))
-
-    def test_save_user(self):
-        self.user.save()
-
-    def test_delete_user(self):
-        self.user.delete()
-
 class ProjectTestClass(TestCase):
     def setUp(self):
         self.user = User.objects.create(id=1, username='Caleb')
@@ -59,3 +30,33 @@ class ProjectTestClass(TestCase):
         self.project.save()
         project = Project.search_projects('random_project')
         self.assertTrue(len(project) >= 0)
+
+
+class ProfileTestClass(TestCase):
+    def setUp(self):
+        self.user = User(id=1, username='Calebbii', password='1234')
+        self.user.save()
+
+    def test_instance(self):
+        self.assertTrue(isinstance(self.user, User))
+
+    def test_save_user(self):
+        self.user.save()
+
+    def test_delete_user(self):
+        self.user.delete()
+        
+
+class RatingTestClass(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(id=1, username='Calebbii')
+        self.project = Project.objects.create(id=1, title='Nifty Design', description='This website showcases designers work and what their brands have produced.',technologies_used='HTML',post_date='2021,6,19',project_image='https://cloudinary url', repo_link='http://github.com',live_link='http://heroku.com',user=self.user)
+        self.rating = Rating.objects.create(id=1, design_wise=8, usability_wise=8, content_wise=7, user=self.user, project=self.project)
+
+    def test_instance(self):
+        self.assertTrue(isinstance(self.rating, Rating))
+
+    def test_save_rating(self):
+        self.rating.save_rating()
+        rating = Rating.objects.all()
+        self.assertTrue(len(rating) > 0)
