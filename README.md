@@ -34,3 +34,12 @@ This is an application that allows a user to post a project he/she has created a
 
 ### Testing the Application
 python3.9 manager.py tests
+
+### Built With 
+* Python3.9
+* Flask
+* Boostrap
+* HTML
+* CSS
+### License
+[MIT Lisence](https://github.com/Calebbii/Instagram-App/blob/master/LICENSE) Copyright (c) 2021 Calebbii.
